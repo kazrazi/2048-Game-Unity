@@ -15,6 +15,8 @@ public class Manager : MonoBehaviour
     [SerializeField] private SpriteRenderer _boardPrefab;
     [SerializeField] private List<BlockType> _types;
     [SerializeField] private float _travelTime = 0.2f;
+    [SerializeField] private int _winCondition = 2048;
+    [SerializeField] private GameObject _winScreen, _loseScreen;
 
     private List<Node> _nodes;
     private List<Block> _blocks;
@@ -69,8 +71,10 @@ public class Manager : MonoBehaviour
             case GameState.Moving:
                 break;
             case GameState.Win:
+                _winScreen.SetActive(true);
                 break;
             case GameState.Lose:
+                _loseScreen.SetActive(true);
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(newState), newState, null);
@@ -111,11 +115,11 @@ public class Manager : MonoBehaviour
 
         if (freeNodes.Count() == 1)
         {
-            // GAME OVER
+            ChangeState(GameState.Lose);
             return;
         }
         
-        ChangeState(GameState.WaitingInput);
+        ChangeState(_blocks.Any(b=>b.Value==_winCondition) ? GameState.Win : GameState.WaitingInput);
     }
 
     private void SpawnBlock(Node node, int value)
