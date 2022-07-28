@@ -10,7 +10,10 @@ public class Block : MonoBehaviour
     
     public int Value;
     public Node Node;
+    public Block MergingBlock;
+    public bool Merging;
     public Vector2 Pos => transform.position;
+    public bool CanMerge(int value) => value == Value && !Merging && MergingBlock == null; 
 
     public void Init(Manager.BlockType type)
     {
@@ -27,5 +30,12 @@ public class Block : MonoBehaviour
         }
         Node = node;
         Node.OccupiedBlock = this;
+    }
+
+    public void MergeBlock(Block blockToMergeWith)
+    {
+        MergingBlock = blockToMergeWith;
+        Node.OccupiedBlock = null;
+        blockToMergeWith.Merging = true;
     }
 }
